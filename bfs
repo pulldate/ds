@@ -1,0 +1,105 @@
+#include<stdio.h>
+#include<stdlib.h>
+struct node
+{
+    struct node *link;
+    int vertex;
+};
+typedef struct node* nodeptr; 
+struct node1
+{
+    int data;
+    struct node1* link;
+};
+typedef struct node1* qptr;
+qptr front=NULL,rear=NULL;
+nodeptr G[20];   
+int visited[20];
+int n;
+void read_graph()
+{
+    int i,vi,vj,no_of_edges;
+    printf("Enter number of vertices:");
+    scanf("%d",&n);
+    for(i=0;i<n;i++)
+    {
+        G[i]=NULL;
+        printf("Enter number of edges:");
+           scanf("%d",&no_of_edges);
+        for(i=0;i<no_of_edges;i++)
+        {
+            printf("Enter an edge(u,v):");
+            scanf("%d%d",&vi,&vj);
+            insert(vi,vj);
+        }
+    }
+}
+ 
+void insert(int vi,int vj)
+{
+    nodeptr p,q;
+    q=(nodeptr)malloc(sizeof(struct node));
+    q->vertex=vj;
+    q->link=NULL;
+    if(G[vi]==NULL)
+        G[vi]=q;
+    else
+    {
+        p=G[vi];
+        while(p->link!=NULL)
+            p=p->link;
+        p->link=q;
+    }
+}
+void BFS(int v) {
+    nodeptr w;
+    printf("%3d",v);
+    visited[v]=1;
+    enqueue(v);
+    while(front) {
+      v=dequeue();
+      for(w=G[v];w;w=w->link) {
+         if(!visited[w->vertex]) {
+            printf("%3d",w->vertex);
+            enqueue(w->vertex);
+            visited[w->vertex]=1;
+         }
+           
+      }
+    }
+}
+void enqueue(int value){
+    qptr temp;
+    temp=(qptr)malloc(sizeof(struct node1));
+    temp->data=value;
+    if(front) 
+      rear->link=temp;
+    else
+      front=temp;
+    rear=temp;
+    rear->link=NULL;
+}
+
+int dequeue(){
+    int item;
+    qptr temp;
+    if(!front){
+        printf("Queue is empty");
+        item = -1;
+    }
+    else{
+          temp=front;
+          item=front->data;
+          front=front->link;
+          free(temp);
+        }
+    return item;
+}
+void main()
+{
+    int i;
+    read_graph();
+    for(i=0;i<n;i++)
+        visited[i]=0;
+    BFS(0);
+}
